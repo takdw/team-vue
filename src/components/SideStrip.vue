@@ -19,8 +19,9 @@
       <!-- Nav -->
       <div class="flex flex-col items-center space-y-4">
         <router-link
+          exact
           to="/"
-          class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-300"
+          class="p-2 text-gray-400 hover:text-gray-900 transition ease-out duration-300"
           ><svg
             class="w-6 h-6"
             fill="none"
@@ -37,7 +38,7 @@
         ></router-link>
         <router-link
           to="/teams"
-          class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
+          class="p-2 text-gray-400 hover:text-gray-900 transition ease-out duration-150"
           ><svg
             class="w-6 h-6"
             fill="none"
@@ -54,7 +55,7 @@
         ></router-link>
         <router-link
           to="/players"
-          class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
+          class="p-2 text-gray-400 hover:text-gray-900 transition ease-out duration-150"
           ><svg
             class="w-6 h-6"
             fill="none"
@@ -75,7 +76,7 @@
       <div class="flex justify-center">
         <button
           type="button"
-          class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
+          class="p-2 text-gray-400 hover:text-gray-900 transition ease-out duration-150"
         >
           <svg
             class="w-6 h-6"
