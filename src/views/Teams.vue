@@ -28,22 +28,37 @@
       </div>
       <div class="mt-4 px-8">
         <h2 class="font-medium text-base text-gray-600">Teams</h2>
-        <div class="mt-4 -mx-4 space-y-1">
-          <button
-            type="button"
-            v-for="team in teams"
-            class="block w-full text-left px-4 py-3 font-medium rounded border border-transparent cursor-pointer transition ease-out duration-150 focus:outline-none focus:border-blue-200"
-            :class="
-              team.id === selected
-                ? 'bg-blue-500 text-white'
-                : 'hover:bg-gray-200'
-            "
-            :key="`team-list-${team.id}`"
-            @click="selectTeam(team.id)"
-          >
-            <span>{{ team.name }}</span>
-          </button>
+        <div v-if="loadingTeams" class="mt-4 -mx-4 space-y-1">
+          <div class="pt-12 grid place-items-center">
+            <p class="text-center text-2xl font-medium text-gray-400">
+              <span
+                class="block h-12 w-12 border-4 border-gray-400 rounded-full animate-spin"
+                style="border-bottom-color: transparent"
+              ></span>
+            </p>
+          </div>
         </div>
+        <template v-else>
+          <div v-if="teams.length" class="mt-4 -mx-4 space-y-1">
+            <button
+              type="button"
+              v-for="team in teams"
+              class="block w-full text-left px-4 py-3 font-medium rounded border border-transparent cursor-pointer transition ease-out duration-150 focus:outline-none focus:border-blue-200"
+              :class="
+                team.id === selected
+                  ? 'bg-blue-500 text-white'
+                  : 'hover:bg-gray-200'
+              "
+              :key="`team-list-${team.id}`"
+              @click="selectTeam(team.id)"
+            >
+              <span>{{ team.name }}</span>
+            </button>
+          </div>
+          <div v-else class="mt-4 -mx-4 space-y-1">
+            <p class="pt-12 text-center font-medium text-gray-500">No teams!</p>
+          </div>
+        </template>
       </div>
     </div>
 
@@ -114,95 +129,22 @@
       </div>
     </main>
 
-    <transition
-      enter-class="opacity-0"
-      enter-to-class="opacity-100"
-      enter-active-class="transition ease-in-out duration-150"
-      leave-active-class="transition ease-in-out duration-150"
-      leave-to-class="opacity-0"
-      leave-class="opacity-100"
-    >
-      <div
-        v-if="addingPlayer"
-        class="fixed inset-0 bg-black bg-opacity-25 z-50 grid place-items-center"
-      >
-        <div class="w-full max-w-lg rounded-xl bg-white overflow-hidden">
-          <h2 class="p-6 font-medium text-base">
-            Add Player to Team {{ teamName }}
-          </h2>
-          <form @submit.prevent="addPlayer">
-            <div class="flex space-x-4 px-6">
-              <CloudinaryUploader ref="cloudinaryUploader" />
-              <div class="flex-1 space-y-3">
-                <div>
-                  <label class="font-medium text-gray-600" for="firstName"
-                    >First Name</label
-                  >
-                  <input
-                    v-model="firstName"
-                    id="firstName"
-                    class="mt-1 w-full rounded border bg-white p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label class="font-medium text-gray-600" for="lastName"
-                    >Last Name</label
-                  >
-                  <input
-                    v-model="lastName"
-                    id="lastName"
-                    class="mt-1 w-full rounded border bg-white p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label class="font-medium text-gray-600" for="birthdate"
-                    >Birthdate</label
-                  >
-                  <input
-                    v-model="birthdate"
-                    type="date"
-                    id="birthdate"
-                    class="mt-1 w-full rounded border bg-white p-2"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="mt-4 bg-gray-100 flex justify-end px-6 py-3">
-              <button
-                class="relative font-medium rounded py-3 px-4 bg-blue-500 hover:bg-blue-400 text-white transition ease-out duration-150 shadow-md disabled:cursor-wait overflow-hidden"
-                :class="{ 'hover:shadow': !working }"
-                :disabled="working"
-              >
-                <span
-                  v-if="working"
-                  class="absolute inset-0 bg-blue-300 z-20 grid place-items-center"
-                >
-                  <span
-                    class="block h-6 w-6 border-2 border-white rounded-full animate-spin"
-                    style="border-bottom-color: transparent"
-                  ></span>
-                </span>
-                <span>Add Player</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </transition>
+    <AddPlayerModal
+      :team="selectedTeam"
+      ref="addPlayerModal"
+      @player-added="getPlayers"
+    />
   </div>
 </template>
 
 <script>
 import PlayerCard from "@/components/PlayerCard";
-import CloudinaryUploader from "@/components/CloudinaryUploader";
+import AddPlayerModal from "@/components/modals/AddPlayerModal";
 
 export default {
   components: {
     PlayerCard,
-    CloudinaryUploader,
+    AddPlayerModal,
   },
   data: () => ({
     teams: [],
@@ -210,11 +152,6 @@ export default {
     selected: "",
     loadingTeams: false,
     loadingPlayers: false,
-    addingPlayer: false,
-    working: false,
-    firstName: "",
-    lastName: "",
-    birthdate: "",
   }),
   created() {
     if (this.$route.query.t) {
@@ -229,6 +166,11 @@ export default {
       return this.selected && this.teams.length
         ? this.teams.find(team => team.id === this.selected).name
         : "";
+    },
+    selectedTeam() {
+      return this.selected && this.teams.length
+        ? this.teams.find(team => team.id === this.selected)
+        : {};
     },
   },
   watch: {
@@ -260,47 +202,8 @@ export default {
     },
     startAddingPlayer() {
       if (!this.selected) return;
-      this.addingPlayer = true;
-    },
-    addPlayer() {
-      this.working = true;
 
-      if (!this.validateData()) {
-        return;
-      }
-
-      this.$refs.cloudinaryUploader
-        .upload()
-        .then(path => {
-          return this.$http.post(`teams/${this.selected}/players`, {
-            first_name: this.firstName,
-            last_name: this.lastName,
-            birthdate: this.birthdate,
-            photo: path,
-          });
-        })
-        .then(({ data }) => {
-          this.$success(
-            "Player Added",
-            `${data.first_name} ${data.last_name} was added to team ${this.teamName}`
-          );
-          this.resetFields();
-          this.addingPlayer = false;
-          this.getPlayers();
-        })
-        .catch(err => {
-          console.log(err);
-          this.$error("", "Could not add player to team.");
-        })
-        .finally(() => (this.working = false));
-    },
-    resetFields() {
-      this.firstName = "";
-      this.lastName = "";
-      this.$refs.cloudinaryUploader.reset();
-    },
-    validateData() {
-      return this.firstName && this.lastName && this.birthdate;
+      this.$refs.addPlayerModal.open();
     },
   },
 };

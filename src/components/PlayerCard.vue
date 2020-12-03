@@ -34,17 +34,29 @@ export default {
     },
   },
   components: {},
-  data: () => ({}),
-  created() {},
+  data: () => ({
+    added: "",
+  }),
+  created() {
+    this.added = this.date.toRelative();
+    setInterval(this.updateCreatedAt, 60 * 1000);
+  },
   computed: {
     name() {
       return this.player.first_name + " " + this.player.last_name;
     },
-    added() {
-      return DateTime.fromISO(this.player.created_at).toRelative();
+    date() {
+      return DateTime.fromISO(this.player.created_at);
     },
   },
-  methods: {},
+  methods: {
+    updateCreatedAt() {
+      this.added = this.date.toRelative();
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.updateCreatedAt);
+  },
 };
 </script>
 
