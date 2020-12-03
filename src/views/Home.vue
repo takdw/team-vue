@@ -1,18 +1,21 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="h-screen grid place-items-center">
+    <h1
+      class="bg-clip-text text-transparent text-7xl font-semibold bg-gradient-to-r from-pink-500 to-red-500"
+    >
+      It works!
+    </h1>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
-}
+  components: {},
+  data: () => ({}),
+  created() {},
+  computed: {},
+  methods: {},
+};
 </script>
+
+<style></style>
