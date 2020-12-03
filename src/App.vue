@@ -5,6 +5,8 @@
     <div class="flex-1 flex h-full">
       <router-view></router-view>
     </div>
+
+    <notifications group="notifications" classes="notify" />
   </div>
 </template>
 

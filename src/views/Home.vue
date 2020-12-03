@@ -105,8 +105,18 @@ export default {
             },
           });
           this.name = "";
+
+          this.$success(
+            "Success",
+            `Team ${response.data.name} was created successfully.`
+          );
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.$error(
+            err.response?.status === 500 ? err.response.statusText : "",
+            "Could not create team."
+          );
+        })
         .finally(() => (this.working = false));
     },
     escapeListener(e) {
