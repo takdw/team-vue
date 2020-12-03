@@ -4,7 +4,11 @@
   >
     <div class="flex justify-center">
       <div class="w-48 h-48 rounded-full overflow-hidden">
-        <img class="w-full h-full object-cover" :src="photo" :alt="name" />
+        <img
+          class="w-full h-full object-cover"
+          :src="player.photo"
+          :alt="name"
+        />
       </div>
     </div>
     <div class="mt-8 text-center">
@@ -30,9 +34,6 @@ export default {
   computed: {
     name() {
       return this.player.first_name + " " + this.player.last_name;
-    },
-    photo() {
-      return process.env.VUE_APP_BACKEND_URL + "storage/" + this.player.photo;
     },
   },
   methods: {},

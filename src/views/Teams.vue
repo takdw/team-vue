@@ -132,47 +132,7 @@
           </h2>
           <form @submit.prevent="addPlayer">
             <div class="flex space-x-4 px-6">
-              <div class="relative h-32 w-32 flex-shrink-0">
-                <input
-                  @change="processFile"
-                  type="file"
-                  class="hidden"
-                  ref="fileUploadInput"
-                />
-                <button
-                  @click="openFileUploader"
-                  type="button"
-                  class="block w-full absolute inset-0 grid place-items-center focus:outline-none bg-gray-100 group cursor-pointer border border-transparent hover:border-gray-300 hover:bg-gray-200 rounded-full transition ease-out duration-150 overflow-hidden"
-                >
-                  <svg
-                    v-if="!previewData"
-                    class="w-10 h-10 opacity-25 group-hover:opacity-75 transition ease-out duration-150"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                  </svg>
-                  <img
-                    v-else
-                    class="w-full h-full object-cover"
-                    :src="previewData"
-                    :alt="file.name"
-                  />
-                </button>
-              </div>
+              <CloudinaryUploader ref="cloudinaryUploader" />
               <div class="flex-1 space-y-3">
                 <div>
                   <label class="font-medium text-gray-600" for="firstName"
@@ -237,10 +197,12 @@
 
 <script>
 import PlayerCard from "@/components/PlayerCard";
+import CloudinaryUploader from "@/components/CloudinaryUploader";
 
 export default {
   components: {
     PlayerCard,
+    CloudinaryUploader,
   },
   data: () => ({
     teams: [],
@@ -250,9 +212,6 @@ export default {
     loadingPlayers: false,
     addingPlayer: false,
     working: false,
-    fileTypeError: false,
-    file: "",
-    previewData: "",
     firstName: "",
     lastName: "",
     birthdate: "",
@@ -299,32 +258,9 @@ export default {
     selectTeam(id) {
       this.selected = parseInt(id);
     },
-    openFileUploader() {
-      this.$refs.fileUploadInput.click();
-    },
     startAddingPlayer() {
       if (!this.selected) return;
       this.addingPlayer = true;
-    },
-    processFile(e) {
-      this.fileTypeError = false;
-
-      const file = e.target.files[0];
-
-      const allowedTypes = ["image/jpeg", "image/png"];
-
-      if (!allowedTypes.includes(file.type)) {
-        this.fileTypeError = true;
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = e => {
-        this.previewData = e.target.result;
-      };
-      reader.readAsDataURL(file);
-
-      this.file = file;
     },
     addPlayer() {
       this.working = true;
@@ -333,14 +269,16 @@ export default {
         return;
       }
 
-      const fd = new FormData();
-      fd.append("photo", this.file);
-      fd.append("first_name", this.firstName);
-      fd.append("last_name", this.lastName);
-      fd.append("birthdate", this.birthdate);
-
-      this.$http
-        .post(`teams/${this.selected}/players`, fd)
+      this.$refs.cloudinaryUploader
+        .upload()
+        .then(path => {
+          return this.$http.post(`teams/${this.selected}/players`, {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            birthdate: this.birthdate,
+            photo: path,
+          });
+        })
         .then(({ data }) => {
           this.$success(
             "Player Added",
@@ -359,14 +297,10 @@ export default {
     resetFields() {
       this.firstName = "";
       this.lastName = "";
-      this.file = "";
-      this.previewData = "";
-      this.birthdate = "";
+      this.$refs.cloudinaryUploader.reset();
     },
     validateData() {
-      return (
-        this.file?.name && this.firstName && this.lastName && this.birthdate
-      );
+      return this.firstName && this.lastName && this.birthdate;
     },
   },
 };
