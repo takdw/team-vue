@@ -2,4 +2,8 @@
 
 @tailwind components;
 
+.router-link-exact-active {
+    @apply text-blue-500 !important;
+}
+
 @tailwind utilities;

@@ -36,7 +36,7 @@
             ></path></svg
         ></router-link>
         <router-link
-          to="/"
+          to="/teams"
           class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
           ><svg
             class="w-6 h-6"
@@ -53,7 +53,7 @@
             ></path></svg
         ></router-link>
         <router-link
-          to="/"
+          to="/players"
           class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
           ><svg
             class="w-6 h-6"
