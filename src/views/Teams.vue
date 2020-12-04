@@ -69,9 +69,10 @@
     >
       <div v-if="id" class="p-6 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <router-link
-            to="/teams"
+          <button
+            type="button"
             class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
+            @click="$router.go(-1)"
           >
             <svg
               class="w-6 h-6"
@@ -85,7 +86,7 @@
                 clip-rule="evenodd"
               ></path>
             </svg>
-          </router-link>
+          </button>
           <h1 class="font-medium text-lg text-gray-600">{{ team.name }}</h1>
         </div>
         <div>

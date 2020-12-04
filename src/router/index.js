@@ -24,9 +24,24 @@ const routes = [
       },
       {
         path: ":teamId",
-        name: "Teams Show",
         component: () =>
-          import(/* webpackChunkName: "team-show" */ "../views/Teams/Show.vue"),
+          import(/* webpackChunkName: "team-index" */ "../views/Team.vue"),
+        children: [
+          {
+            path: "/",
+            name: "Teams Show",
+            component: () =>
+              import(
+                /* webpackChunkName: "team-show" */ "../views/Teams/Show.vue"
+              ),
+          },
+          {
+            path: ":playerId",
+            name: "Player",
+            component: () =>
+              import(/* webpackChunkName: "player" */ "../views/Player.vue"),
+          },
+        ],
       },
     ],
   },

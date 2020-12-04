@@ -17,14 +17,14 @@
         v-if="players.length"
         class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"
       >
-        <div
+        <router-link
           v-for="player in players"
-          class="col-span-1"
+          class="block col-span-1 focus:outline-none focus:ring focus:ring-blue-300"
           :key="`player-${player.id}`"
-          @click="$refs.showPlayerModal.open(player)"
+          :to="`/teams/${id}/${player.id}`"
         >
           <PlayerCard :player="player" />
-        </div>
+        </router-link>
       </div>
       <div v-else>
         <div class="h-72 grid place-items-center">
@@ -37,19 +37,15 @@
         </div>
       </div>
     </div>
-
-    <ShowPlayerModal :team="team" ref="showPlayerModal" />
   </div>
 </template>
 
 <script>
 import PlayerCard from "@/components/PlayerCard";
-import ShowPlayerModal from "@/components/modals/ShowPlayerModal";
 
 export default {
   components: {
     PlayerCard,
-    ShowPlayerModal,
   },
   data: () => ({
     team: {
