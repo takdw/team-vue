@@ -108,6 +108,7 @@
               v-for="player in players"
               class="col-span-1"
               :key="`player-${player.id}`"
+              @click="$refs.showPlayerModal.open(player)"
             >
               <PlayerCard :player="player" />
             </div>
@@ -134,17 +135,21 @@
       ref="addPlayerModal"
       @player-added="getPlayers"
     />
+
+    <ShowPlayerModal :team="selectedTeam" ref="showPlayerModal" />
   </div>
 </template>
 
 <script>
 import PlayerCard from "@/components/PlayerCard";
 import AddPlayerModal from "@/components/modals/AddPlayerModal";
+import ShowPlayerModal from "@/components/modals/ShowPlayerModal";
 
 export default {
   components: {
     PlayerCard,
     AddPlayerModal,
+    ShowPlayerModal,
   },
   data: () => ({
     teams: [],
