@@ -10,7 +10,7 @@
     <div
       v-if="addingPlayer"
       @click="close"
-      class="fixed inset-0 bg-black bg-opacity-25 z-50 grid place-items-center"
+      class="fixed inset-0 bg-black bg-opacity-25 z-50 grid place-items-center py-8 px-4"
     >
       <div
         @click.stop
@@ -20,9 +20,11 @@
           Add Player to Team {{ team.name }}
         </h2>
         <form @submit.prevent="addPlayer">
-          <div class="flex space-x-4 px-6">
-            <CloudinaryUploader ref="cloudinaryUploader" />
-            <div class="flex-1 space-y-3">
+          <div class="md:flex md:space-x-4 px-6">
+            <div class="flex flex-shrink-0 justify-center">
+              <CloudinaryUploader ref="cloudinaryUploader" />
+            </div>
+            <div class="mt-4 md:mt-0 flex-1 space-y-3">
               <div>
                 <label class="font-medium text-gray-600" for="firstName"
                   >First Name</label
