@@ -10,7 +10,7 @@
     <div
       v-if="showModal"
       @click="close"
-      class="fixed inset-0 bg-black bg-opacity-25 z-50 grid place-items-center py-8"
+      class="fixed inset-0 bg-black bg-opacity-25 z-50 grid place-items-center py-8 px-4"
     >
       <div
         @click.stop

@@ -1,14 +1,16 @@
 <template>
   <div>
-    <div class="px-6 flex space-x-4">
-      <div class="w-96 h-96 flex-shrink-0 rounded-full overflow-hidden">
+    <div class="lg:px-6 lg:flex lg:space-x-4">
+      <div
+        class="h-64 w-full sm:h-96 lg:w-56 lg:h-56 xl:w-96 xl:h-96 lg:flex-shrink-0 lg:rounded-full overflow-hidden"
+      >
         <img
           class="w-full h-full object-cover object-top overflow-hidden"
           :src="player.photo"
           :alt="name"
         />
       </div>
-      <div class="relative p-4 max-w-xl">
+      <div class="relative p-4 lg:max-w-xl">
         <button
           @click="$refs.editPlayerModal.open()"
           type="button"
