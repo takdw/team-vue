@@ -98,12 +98,7 @@ export default {
           name: this.name,
         })
         .then(response => {
-          this.$router.push({
-            path: "/teams",
-            query: {
-              t: response.data.id,
-            },
-          });
+          this.$router.push(`/teams/${response.data.id}`);
           this.name = "";
 
           this.$success(
