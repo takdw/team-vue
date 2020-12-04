@@ -1,13 +1,13 @@
 <template>
   <div
-    class="w-24 h-full flex flex-shrink-0 justify-center bg-gray-200 shadow border-r border-gray-300 z-50"
+    class="w-12 sm:w-24 h-full flex flex-shrink-0 justify-center bg-gray-200 shadow border-r border-gray-300 z-50"
   >
     <div class="py-6 flex flex-col justify-between">
       <!-- Profile Icon -->
       <div class="flex justify-center">
         <button
           type="button"
-          class="h-12 w-12 rounded-full overflow-hidden focus:ring focus:outline-none"
+          class="h-8 w-8 sm:h-12 sm:w-12 rounded-full overflow-hidden focus:ring focus:outline-none"
         >
           <img
             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=1.5&w=300&h=300&q=80"
@@ -114,4 +114,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.router-link-active {
+  @apply text-blue-500 !important;
+}
+</style>

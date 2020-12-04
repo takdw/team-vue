@@ -2,10 +2,6 @@
 
 @tailwind components;
 
-.router-link-active {
-    @apply text-blue-500 !important;
-}
-
 .vue-notification-group {
     @apply w-full max-w-md px-4 !important;
 }

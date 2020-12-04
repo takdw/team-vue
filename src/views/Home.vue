@@ -40,7 +40,7 @@
       leave-class="transform translate-y-0 opacity-100"
     >
       <div v-if="creating" class="absolute w-full flex justify-center">
-        <form @submit.prevent="create" class="w-full max-w-sm">
+        <form @submit.prevent="create" class="px-4 md:px-0 w-full max-w-sm">
           <input
             class="w-full block rounded text-base px-4 py-3 bg-transparent border-2 border-gray-200 focus:border-blue-500 focus:bg-white placeholder-gray-700 transition ease-out duration-150"
             placeholder="Team Name"

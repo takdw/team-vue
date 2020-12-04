@@ -1,6 +1,9 @@
 <template>
   <div class="h-full flex flex-1">
-    <div class="relative flex-shrink-0 w-96 h-full bg-white overflow-y-auto">
+    <div
+      class="relative flex-shrink-0 w-full md:w-96 h-full bg-white overflow-y-auto"
+      :class="{ 'hidden md:block': id }"
+    >
       <div class="p-4 sticky top-0 bg-white z-10">
         <div class="relative">
           <label for="search" class="sr-only">Search</label>
@@ -40,20 +43,17 @@
         </div>
         <template v-else>
           <div v-if="teams.length" class="mt-4 -mx-4 space-y-1">
-            <button
-              type="button"
+            <router-link
               v-for="team in teams"
               class="block w-full text-left px-4 py-3 font-medium rounded border border-transparent cursor-pointer transition ease-out duration-150 focus:outline-none focus:border-blue-200"
               :class="
-                team.id === selected
-                  ? 'bg-blue-500 text-white'
-                  : 'hover:bg-gray-200'
+                team.id == id ? 'bg-blue-500 text-white' : 'hover:bg-gray-200'
               "
               :key="`team-list-${team.id}`"
-              @click="selectTeam(team.id)"
+              :to="`/teams/${team.id}`"
             >
               <span>{{ team.name }}</span>
-            </button>
+            </router-link>
           </div>
           <div v-else class="mt-4 -mx-4 space-y-1">
             <p class="pt-12 text-center font-medium text-gray-500">No teams!</p>
@@ -61,126 +61,88 @@
         </template>
       </div>
     </div>
-
-    <main class="flex-1 h-full overflow-y-auto">
-      <div v-if="selected">
-        <div class="p-6 flex justify-between items-center">
-          <h1 class="font-medium text-lg text-gray-600">{{ teamName }}</h1>
-          <div>
-            <button
-              type="button"
-              @click="startAddingPlayer"
-              class="flex items-center space-x-2 px-4 py-3 bg-blue-500 text-white font-medium rounded hover:bg-opacity-90 transition duration-150 ease-out shadow-md hover:shadow"
+    <main
+      class="flex-1 h-full overflow-y-auto"
+      :class="{
+        'hidden md:block': !id,
+      }"
+    >
+      <div v-if="id" class="p-6 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <router-link
+            to="/teams"
+            class="p-2 text-gray-500 hover:text-gray-900 transition ease-out duration-150"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
-              </svg>
-              <span>Add Player</span>
-            </button>
-          </div>
+              <path
+                fill-rule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </router-link>
+          <h1 class="font-medium text-lg text-gray-600">{{ team.name }}</h1>
         </div>
-        <div v-if="loadingPlayers">
-          <div class="h-72 grid place-items-center">
-            <div class="text-center">
-              <p class="text-2xl font-medium text-gray-400">
-                <span
-                  class="block h-12 w-12 border-4 border-gray-400 rounded-full animate-spin"
-                  style="border-bottom-color: transparent"
-                ></span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div v-else class="p-6">
-          <div v-if="players.length" class="grid grid-cols-4 gap-6">
-            <div
-              v-for="player in players"
-              class="col-span-1"
-              :key="`player-${player.id}`"
-              @click="$refs.showPlayerModal.open(player)"
+        <div>
+          <button
+            type="button"
+            @click="startAddingPlayer"
+            class="flex items-center space-x-2 px-4 py-3 bg-blue-500 text-white font-medium rounded hover:bg-opacity-90 transition duration-150 ease-out shadow-md hover:shadow"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <PlayerCard :player="player" />
-            </div>
-          </div>
-          <div v-else>
-            <div class="h-72 grid place-items-center">
-              <div class="text-center">
-                <p class="text-2xl font-medium text-gray-400">
-                  No players in team {{ teamName }}.
-                </p>
-                <p class="text-gray-400 font-medium">Maybe add some?</p>
-              </div>
-            </div>
-          </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            <span>Add Player</span>
+          </button>
         </div>
       </div>
       <div v-else class="h-full grid place-items-center">
         <p class="font-medium text-gray-500">No team selected.</p>
       </div>
+      <router-view></router-view>
+      <AddPlayerModal :team="team" ref="addPlayerModal" />
     </main>
-
-    <AddPlayerModal
-      :team="selectedTeam"
-      ref="addPlayerModal"
-      @player-added="getPlayers"
-    />
-
-    <ShowPlayerModal :team="selectedTeam" ref="showPlayerModal" />
   </div>
 </template>
 
 <script>
-import PlayerCard from "@/components/PlayerCard";
 import AddPlayerModal from "@/components/modals/AddPlayerModal";
-import ShowPlayerModal from "@/components/modals/ShowPlayerModal";
 
 export default {
   components: {
-    PlayerCard,
     AddPlayerModal,
-    ShowPlayerModal,
   },
   data: () => ({
     teams: [],
-    players: [],
-    selected: "",
     loadingTeams: false,
-    loadingPlayers: false,
   }),
   created() {
-    if (this.$route.query.t) {
-      this.selected = parseInt(this.$route.query.t);
-      this.getPlayers();
-    }
-
     this.getTeams();
   },
   computed: {
-    teamName() {
-      return this.selected && this.teams.length
-        ? this.teams.find(team => team.id === this.selected).name
-        : "";
+    id() {
+      return this.$route.params.teamId;
     },
-    selectedTeam() {
-      return this.selected && this.teams.length
-        ? this.teams.find(team => team.id === this.selected)
+    team() {
+      return this.teams.length && this.id
+        ? this.teams.find(team => team.id === parseInt(this.id))
         : {};
-    },
-  },
-  watch: {
-    selected() {
-      this.getPlayers();
     },
   },
   methods: {
@@ -193,21 +155,7 @@ export default {
         .catch(err => this.$error())
         .finally(() => (this.loadingTeams = false));
     },
-    getPlayers() {
-      this.loadingPlayers = true;
-
-      this.$http
-        .get(`teams/${this.selected}/players`)
-        .then(response => (this.players = response.data))
-        .catch(err => this.$error())
-        .finally(() => (this.loadingPlayers = false));
-    },
-    selectTeam(id) {
-      this.selected = parseInt(id);
-    },
     startAddingPlayer() {
-      if (!this.selected) return;
-
       this.$refs.addPlayerModal.open();
     },
   },

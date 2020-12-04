@@ -148,7 +148,7 @@ export default {
           );
           this.resetFields();
           this.addingPlayer = false;
-          this.$emit("player-added");
+          this.$root.$emit("player-added", this.team.id);
         })
         .catch(err => {
           console.log(err);
