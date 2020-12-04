@@ -2,23 +2,32 @@
 
 ## Requirements
 
+- Node
+- Yarn/NPM
+
+## Installation
+
+Clone the repository to your local folder. Run the command below to install all the node dependencies.
+
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+Make a copy of the `.env.exmaple` file and rename it to `env.development.local` or `env.local`. Then set the `VUE_APP_API_BASE_URL` to the API base URL of your API server.
+
+Run the command below to compile the assets in development mode and start a watcher.
 
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+You can run the command below to build the assets for production.
 
 ```
 yarn build
 ```
 
-### Run your unit tests
+## Testing
 
 ```
 yarn test:unit
